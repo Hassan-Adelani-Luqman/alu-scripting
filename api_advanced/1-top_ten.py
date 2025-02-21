@@ -1,3 +1,4 @@
+
 #!/usr/bin/python3
 """
 A module that prints the titles of the top
@@ -31,4 +32,4 @@ def top_ten(subreddit):
         print(post.get("data", {}).get("title"))
 
 
-# top_ten("programming")            
+# top_ten("programming")
