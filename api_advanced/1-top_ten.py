@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 """
 A module that prints the titles of the top
@@ -9,27 +8,26 @@ import requests
 
 def top_ten(subreddit):
     """
-    A function that fetches and prints the titles
+    Fetches and prints the titles
     of the top ten hot posts from a subreddit.
     """
-
-    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
+    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
     headers = {"User-Agent": "Mozilla/5.0"}
-    response = requests.get(
-        url,
-        params={"after": None},
-        allow_redirects=False,
-        headers=headers,
-    )
+    params = {"limit": 10}
 
-    if response.status_code != 200:
+    try:
+        response = requests.get(
+            url,
+            headers=headers,
+            params=params,
+            allow_redirects=False
+        )
+        if response.status_code == 200:
+            data = response.json().get("data", {}).get("children", [])
+            for post in data:
+                print(post.get("data", {}).get("title"))
+        else:
+            print(None)
+    except requests.RequestException:
         print(None)
-        return
 
-    jsonData = response.json()
-    data = jsonData["data"]["children"]
-    for post in data:
-        print(post.get("data", {}).get("title"))
-
-
-# top_ten("programming")
