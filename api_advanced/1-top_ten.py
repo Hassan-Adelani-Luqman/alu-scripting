@@ -8,32 +8,27 @@ import requests
 
 def top_ten(subreddit):
     """
-    Fetches and prints the titles of the top ten hot posts from a subreddit.
-    If the subreddit is invalid or there are no hot posts, print None.
+    A function that fetches and prints the titles
+    of the top ten hot posts from a subreddit.
     """
-    url = f"https://www.reddit.com/r/{subreddit}/hot.json"
+
+    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
     headers = {"User-Agent": "Mozilla/5.0"}
-    params = {"limit": 10}
+    response = requests.get(
+        url,
+        params={"after": None},
+        allow_redirects=False,
+        headers=headers,
+    )
 
-    try:
-        response = requests.get(
-            url,
-            headers=headers,
-            params=params,
-            allow_redirects=False
-        )
-
-        if response.status_code != 200:
-            print(None)
-            return
-
-        data = response.json().get("data", {}).get("children", [])
-        if not data:
-            print(None)
-            return
-
-        for post in data:
-            print(post["data"]["title"])
-
-    except requests.RequestException:
+    if response.status_code != 200:
         print(None)
+        return
+
+    jsonData = response.json()
+    data = jsonData["data"]["children"]
+    for post in data:
+        print(post.get("data", {}).get("title"))
+
+
+# top_ten("programming")
